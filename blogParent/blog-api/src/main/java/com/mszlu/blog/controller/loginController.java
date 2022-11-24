@@ -13,6 +13,12 @@ public class loginController {
     @Autowired
     private LoginService loginService;
 
+    /**
+     * 点击登录的时候先调用该方法去后台获取token
+     * 紧接着前台会拿上该token调用UserController中的方法currentUser验证用户名密码
+     * @param loginParam
+     * @return
+     */
     @PostMapping
     public Result login(@RequestBody LoginParam loginParam) {
         return loginService.login(loginParam);

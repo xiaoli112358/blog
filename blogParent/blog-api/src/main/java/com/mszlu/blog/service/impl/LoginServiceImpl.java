@@ -49,7 +49,8 @@ public class LoginServiceImpl implements LoginService {
         }
         //登录成功，使用JWT生成token，返回token和redis中
         String token = JWTUtils.createToken(sysUser.getId());
-        //把token存入redis
+        //把token存入redis(redis在set值时，key存在就覆盖，不存在就新增)
+        // token每登录一次，redis都被覆盖一次，1天的有效时长有什么意义？
         redisTemplate.opsForValue().set("token_" + token, JSON.toJSONString(sysUser), 1, TimeUnit.DAYS);//一天有效
         return Result.success(token);
     }
@@ -100,7 +101,7 @@ public class LoginServiceImpl implements LoginService {
         }
         SysUser userByAccount = sysUserService.findUserByAccount(account);
         if(userByAccount !=null){
-            return Result.fail(ErrorCode.ErrorCode.getCode(),ErrorCode.ErrorCode.getMsg());
+            return Result.fail(ErrorCode.ACCOUNT_EXIST.getCode(),ErrorCode.ACCOUNT_EXIST.getMsg());
         }
         SysUser sysUser = new SysUser();
         sysUser.setAccount(account);

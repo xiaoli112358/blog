@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class SysUser {
 //    @TableId(type = IdType.ASSIGN_ID)//默认id类型
-//    @TableId(type = IdType.AUTO)//自增
+    @TableId(type = IdType.AUTO)//自增(此处自增不生效，默认还是mp的雪花算法，原因暂未知)
     private Long id;
 
     private String account;

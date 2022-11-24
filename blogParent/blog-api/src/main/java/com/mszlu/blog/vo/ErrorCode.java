@@ -8,6 +8,8 @@ public enum  ErrorCode {
     SESSION_TIME_OUT(90001, "会话超时"),
     TOKEN_ERROR(10003, "token不合法"),
     ErrorCode(10004,"账号已存在"),
+    ACCOUNT_EXIST(10004,"账号已存在"),
+
     ;
 
 
