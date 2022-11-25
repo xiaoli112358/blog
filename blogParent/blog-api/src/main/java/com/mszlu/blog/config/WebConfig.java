@@ -25,5 +25,12 @@ public class WebConfig  implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry){
         registry.addInterceptor(loginInterceptor).addPathPatterns("/test").addPathPatterns("/comments/create/change");
+//        目前前端并不会自动将token携带发起请求，如果使用下面的拦截规则，所以的请求过来都不带token，所以只做测试使用上面的/test，可以将token
+//        赋到postman里面发起test的请求
+//        registry.addInterceptor(loginInterceptor).addPathPatterns("/**")
+//                .excludePathPatterns("/login")
+//                .excludePathPatterns("/logout")
+//                .excludePathPatterns("/users/currentUser")
+//                .excludePathPatterns("/register");
     }
 }

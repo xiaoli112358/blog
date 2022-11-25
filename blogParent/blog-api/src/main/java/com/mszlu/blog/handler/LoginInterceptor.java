@@ -24,8 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginInterceptor implements HandlerInterceptor {
     @Autowired
     private LoginService loginService;
+
     @Override
-    public boolean preHandle (HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 //在执行controller方法(Handler)之前进行执行
         /**
          * 1. 需要判断 请求的接口路径 是否为 HandlerMethod (controller方法)
@@ -34,19 +35,19 @@ public class LoginInterceptor implements HandlerInterceptor {
          * 4. 如果认证成功 放行即可
          */
         //如果不是我们的方法进行放行
-        if (!(handler instanceof HandlerMethod)){
+        if (!(handler instanceof HandlerMethod)) {
             return true;
         }
         String token = request.getHeader("Authorization");
 
         log.info("=================request start===========================");
         String requestURI = request.getRequestURI();
-        log.info("request uri:{}",requestURI);
-        log.info("request method:{}",request.getMethod());
+        log.info("request uri:{}", requestURI);
+        log.info("request method:{}", request.getMethod());
         log.info("token:{}", token);
         log.info("=================request end===========================");
 
-        if (StringUtils.isBlank(token)){
+        if (StringUtils.isBlank(token)) {
             Result result = Result.fail(ErrorCode.NO_LOGIN.getCode(), ErrorCode.NO_LOGIN.getMsg());
             //设置浏览器识别返回的是json
             response.setContentType("application/json;charset=utf-8");
@@ -56,7 +57,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             return false;
         }
         SysUser sysUser = loginService.checkToken(token);
-        if (sysUser==null){
+        if (sysUser == null) {
             Result result = Result.fail(ErrorCode.NO_LOGIN.getCode(), ErrorCode.NO_LOGIN.getMsg());
             response.setContentType("application/json;charset=utf-8");
             response.getWriter().print(JSON.toJSONString(result));
@@ -73,6 +74,7 @@ public class LoginInterceptor implements HandlerInterceptor {
      * 本地线程用完要删除，否则会出现内存泄漏
      * 内存泄漏（Memory Leak）是指程序中己动态分配的堆内存由于某种原因程序未释放或无法释放，造成系统内存的浪费，导致程序运行速度减慢甚至系统崩溃等严重后果。
      * 当我们在程序中对原始指针(raw pointer)使用new操作符或者free函数的时候，实际上是在堆上为其分配内存，这个内存指的是RAM，而不是硬盘等永久存储。持续申请而不释放(或者少量释放)内存的应用程序，最终因内存耗尽导致OOM(out of memory)。
+     *
      * @param request
      * @param response
      * @param handler
