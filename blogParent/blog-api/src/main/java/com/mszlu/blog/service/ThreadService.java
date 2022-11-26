@@ -17,7 +17,7 @@ public class ThreadService {
      * @param articleMapper
      * @param article
      */
-    @Async("taskExecutor")
+    @Async("taskExecutor")//异步执行(无需等待前面的查询方法完成)告诉线程去执行哪个线程池(配置类线程池中指明了一个叫taskExecutor的线程池)
     public void updateArticleViewCount(ArticleMapper articleMapper, Article article) {
         Integer viewCounts = article.getViewCounts();
         Article articleupdate = new Article();

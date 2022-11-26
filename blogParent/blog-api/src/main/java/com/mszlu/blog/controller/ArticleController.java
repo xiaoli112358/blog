@@ -48,6 +48,12 @@ public class ArticleController {
     public Result listArchives() {
         return  articleService.listArchives();
     }
+
+    /**
+     * 文章详情
+     * @param articleId
+     * @return
+     */
     @PostMapping("view/{id}")
 //    通过 @PathVariable 可以将URL中占位符参数{xxx}绑定到处理器类的方法形参中@PathVariable(“xxx“)
     public Result findArticleById(@PathVariable("id") Long articleId){
