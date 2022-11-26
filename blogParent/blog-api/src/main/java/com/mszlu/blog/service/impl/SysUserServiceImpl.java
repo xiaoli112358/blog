@@ -10,6 +10,7 @@ import com.mszlu.blog.vo.ErrorCode;
 import com.mszlu.blog.vo.LoginUserVo;
 import com.mszlu.blog.vo.Result;
 import com.mszlu.blog.vo.UserVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -90,9 +91,10 @@ public class SysUserServiceImpl implements SysUserService {
             sysUser.setNickname("码神之路");
         }
         UserVo userVo = new UserVo();
-        userVo.setId(sysUser.getId());
-        userVo.setAvatar(sysUser.getAvatar());
-        userVo.setNickname(sysUser.getNickname());
+//        userVo.setId(sysUser.getId());
+//        userVo.setAvatar(sysUser.getAvatar());
+//        userVo.setNickname(sysUser.getNickname());
+        BeanUtils.copyProperties(sysUser,userVo);
         return userVo;
     }
 }

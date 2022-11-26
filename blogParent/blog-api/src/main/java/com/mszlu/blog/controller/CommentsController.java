@@ -27,8 +27,8 @@ public class CommentsController {
      * @param commentParam
      * @return
      */
-    /*@PostMapping("create/change")
+    @PostMapping("create/change")
     public Result comment(@RequestBody CommentParam commentParam){
         return commentService.comment(commentParam);
-    }*/
+    }
 }
