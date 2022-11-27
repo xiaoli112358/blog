@@ -1,5 +1,6 @@
 package com.mszlu.blog.controller;
 
+import com.mszlu.blog.aop.LogAnnotation;
 import com.mszlu.blog.dao.pojo.Article;
 import com.mszlu.blog.service.ArticleService;
 import com.mszlu.blog.service.CommentService;
@@ -18,6 +19,8 @@ public class ArticleController {
     private ArticleService articleService;
 
     @PostMapping
+    //加上此注解，代表要对此接口记录日志
+    @LogAnnotation(module = "文章",operation = "获取文章列表")
     public Result articles(@RequestBody PageParams pageParams) {
         //ArticleVo 页面接收的数据
 //        int a=10/0;
