@@ -21,4 +21,12 @@ public class CategoryController {
     public Result categoryFindAll(){
         return categoryService.findAll();
     }
+    /**
+     * 查询所有标签明细
+     * @return
+     */
+    @GetMapping("/detail")
+    public Result categoryFindAllDetail(){
+        return categoryService.findAllDetail();
+    }
 }

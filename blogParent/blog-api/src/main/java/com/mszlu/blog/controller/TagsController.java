@@ -28,4 +28,12 @@ public class TagsController {
     public Result findAll() {
         return tagService.findAll();
     }
+    /**
+     * 查询所有的文章标签详细
+     * @return
+     */
+    @GetMapping("/detail")
+    public Result findAllDetail() {
+        return tagService.findAllDetail();
+    }
 }
