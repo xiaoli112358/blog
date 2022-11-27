@@ -1,6 +1,7 @@
 package com.mszlu.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mszlu.blog.dao.dos.Archives;
 import com.mszlu.blog.dao.mapper.ArticleBodyMapper;
@@ -42,36 +43,36 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private CategoryService categoryService;
 
-    @Override
-    public Result listArticle(PageParams pageParams) {
-
-        Page<Article> page = new Page<>(pageParams.getPage(), pageParams.getPageSize());
-        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
-        if (pageParams.getCategoryId()!=null){
-            queryWrapper.eq(Article::getCategoryId,pageParams.getCategoryId());
-        }
-
-        ArrayList<Long> list = new ArrayList<>();
-        if (pageParams.getTagId()!=null){
-            LambdaQueryWrapper<ArticleTag> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(ArticleTag::getTagId, pageParams.getTagId());
-            List<ArticleTag> articleTagList = articleTagMapper.selectList(wrapper);
-            for (ArticleTag articleTag : articleTagList) {
-                list.add(articleTag.getId());
-            }
-            if (articleTagList.size()>0){
-                queryWrapper.in(Article::getId,list);
-            }
-        }
-        //是否置顶进行排序,        //时间倒序进行排列相当于order by create_data desc
-        queryWrapper.orderByDesc(Article::getWeight, Article::getCreateDate);//对这两个字段进行倒叙查询
-        Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
-        //分页查询用法 https://blog.csdn.net/weixin_41010294/article/details/105726879
-        List<Article> records = articlePage.getRecords();
-        // 要返回我们定义的vo数据，就是对应的前端数据，不应该只返回现在的数据需要进一步进行处理
-        List<ArticleVo> articleVoList = copyList(records, true, true);
-        return Result.success(articleVoList);
-    }
+//    @Override
+//    public Result listArticle(PageParams pageParams) {
+//
+//        Page<Article> page = new Page<>(pageParams.getPage(), pageParams.getPageSize());
+//        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+//        if (pageParams.getCategoryId()!=null){
+//            queryWrapper.eq(Article::getCategoryId,pageParams.getCategoryId());
+//        }
+//
+//        ArrayList<Long> list = new ArrayList<>();
+//        if (pageParams.getTagId()!=null){
+//            LambdaQueryWrapper<ArticleTag> wrapper = new LambdaQueryWrapper<>();
+//            wrapper.eq(ArticleTag::getTagId, pageParams.getTagId());
+//            List<ArticleTag> articleTagList = articleTagMapper.selectList(wrapper);
+//            for (ArticleTag articleTag : articleTagList) {
+//                list.add(articleTag.getId());
+//            }
+//            if (articleTagList.size()>0){
+//                queryWrapper.in(Article::getId,list);
+//            }
+//        }
+//        //是否置顶进行排序,        //时间倒序进行排列相当于order by create_data desc
+//        queryWrapper.orderByDesc(Article::getWeight, Article::getCreateDate);//对这两个字段进行倒叙查询
+//        Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
+//        //分页查询用法 https://blog.csdn.net/weixin_41010294/article/details/105726879
+//        List<Article> records = articlePage.getRecords();
+//        // 要返回我们定义的vo数据，就是对应的前端数据，不应该只返回现在的数据需要进一步进行处理
+//        List<ArticleVo> articleVoList = copyList(records, true, true);
+//        return Result.success(articleVoList);
+//    }
 
     private List<ArticleVo> copyList(List<Article> records, boolean isTag, boolean isAuthor) {
 
@@ -144,6 +145,13 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleBodyVo articleBodyVo = new ArticleBodyVo();
         articleBodyVo.setContent(articleBody.getContent());
         return articleBodyVo;
+    }
+
+    @Override
+    public Result listArticle(PageParams pageParams) {
+        Page<Article> page = new Page<>(pageParams.getPage(),pageParams.getPageSize());
+        IPage<Article> articleIPage = this.articleMapper.listArticle(page,pageParams.getCategoryId(),pageParams.getTagId(),pageParams.getYear(),pageParams.getMonth());
+        return Result.success(copyList(articleIPage.getRecords(),true,true));
     }
 
     @Override
