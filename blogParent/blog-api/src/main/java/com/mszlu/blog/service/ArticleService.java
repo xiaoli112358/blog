@@ -1,7 +1,9 @@
 package com.mszlu.blog.service;
 
+import com.mszlu.blog.dao.pojo.Article;
 import com.mszlu.blog.vo.ArticleVo;
 import com.mszlu.blog.vo.Result;
+import com.mszlu.blog.vo.param.ArticleParam;
 import com.mszlu.blog.vo.param.PageParams;
 
 import java.util.List;
@@ -16,7 +18,11 @@ public interface ArticleService {
     Result listArticle(PageParams pageParams);
 
     List<ArticleVo> listArticlesPage(PageParams pageParams);
-
+    /**
+     * 最热文章
+     * @param limit
+     * @return
+     */
     Result hotArticle(int limit);
     /**
      * 首页 最新文章
@@ -31,13 +37,12 @@ public interface ArticleService {
      * @return
      */
     Result findArticleById(Long articleId);
-
     /**
-     * 最热文章
-     * @param limit
+     * 文章发布服务
      * @return
      */
-//    Result hotArticle(int limit);
+    Result publish(ArticleParam articleParam);
 
-//    List<ArticleVo> listArticlesPage(PageParams pageParams);
+
+
 }

@@ -26,7 +26,8 @@ public class WebMVCConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry){
         registry.addInterceptor(loginInterceptor).addPathPatterns("/test")
                 //评论的时候必须是登录状态，这样才能获得登录用户的信息
-                .addPathPatterns("/comments/create/change");
+                .addPathPatterns("/comments/create/change")
+                .addPathPatterns("/articles/publish");
 //        目前前端并不会自动将token携带发起请求，如果使用下面的拦截规则，所以的请求过来都不带token，所以只做测试使用上面的/test，可以将token
 //        赋到postman里面发起test的请求
 //        registry.addInterceptor(loginInterceptor).addPathPatterns("/**")

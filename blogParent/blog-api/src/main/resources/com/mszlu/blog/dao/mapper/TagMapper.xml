@@ -5,7 +5,7 @@
 <mapper namespace="com.mszlu.blog.dao.mapper.TagMapper">
     <!-- List<Tag> findTagsByArticleId(Long articleId);-->
     <select id="findTagsByArticleId" parameterType="long" resultType="com.mszlu.blog.dao.pojo.Tag">
-        select id,avator,tag_name as tagName from ms_tag where id in(
+        select id,avatar,tag_name as tagName from ms_tag where id in(
           select id from ms_article_tag where id=#{articleId})
     </select>
     <!-- List<Long> findHotsTagIds(int limit);-->

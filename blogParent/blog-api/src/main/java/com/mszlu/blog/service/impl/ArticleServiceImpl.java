@@ -5,13 +5,21 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mszlu.blog.dao.dos.Archives;
 import com.mszlu.blog.dao.mapper.ArticleBodyMapper;
 import com.mszlu.blog.dao.mapper.ArticleMapper;
+import com.mszlu.blog.dao.mapper.ArticleTagMapper;
 import com.mszlu.blog.dao.pojo.Article;
 import com.mszlu.blog.dao.pojo.ArticleBody;
+import com.mszlu.blog.dao.pojo.ArticleTag;
+import com.mszlu.blog.dao.pojo.SysUser;
 import com.mszlu.blog.service.*;
+import com.mszlu.blog.utils.UserThreadLocal;
 import com.mszlu.blog.vo.ArticleBodyVo;
 import com.mszlu.blog.vo.ArticleVo;
 import com.mszlu.blog.vo.Result;
+import com.mszlu.blog.vo.TagVo;
+import com.mszlu.blog.vo.param.ArticleBodyParam;
+import com.mszlu.blog.vo.param.ArticleParam;
 import com.mszlu.blog.vo.param.PageParams;
+import org.apache.tomcat.jni.Thread;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,6 +194,60 @@ public class ArticleServiceImpl implements ArticleService {
         threadService.updateArticleViewCount(articleMapper, article);
 
         return Result.success(articleVo);
+    }
+
+    @Autowired
+    private ArticleTagMapper articleTagMapper;
+
+    @Override
+    @Transactional
+    public Result publish(ArticleParam articleParam) {
+        SysUser sysUser = UserThreadLocal.get();//想要获取必须先做登录拦截
+        /**
+         * 1. 发布文章 目的 构建Article对象
+         * 2. 作者id  当前的登录用户
+         * 3. 标签  要将标签加入到 关联列表当中
+         * 4. body 内容存储 article bodyId
+         */
+        Article article = new Article();
+        article.setCommentCounts(0);
+        article.setCreateDate(System.currentTimeMillis());
+        article.setSummary(articleParam.getSummary());
+        article.setTitle(articleParam.getTitle());
+        article.setViewCounts(0);
+        article.setWeight(Article.Article_Common);
+        article.setAuthorId(sysUser.getId());
+//        article.setBodyId(-1L);
+        article.setCategoryId(articleParam.getCategory().getId());
+
+        articleMapper.insert(article);//插入动作完成后就会产生一个id
+
+//        3. 标签  要将标签加入到 关联列表当中
+        List<TagVo> tags = articleParam.getTags();
+        if (tags != null) {
+            for (TagVo tag : tags) {
+                Long articleId = article.getId();
+                ArticleTag articleTag = new ArticleTag();
+                articleTag.setArticleId(articleId);
+                articleTag.setTagId(tag.getId());
+                articleTagMapper.insert(articleTag);
+            }
+        }
+//        4. body 内容存储 article bodyId
+        ArticleBodyParam body = articleParam.getBody();
+        if (body!=null){
+            ArticleBody articleBody = new ArticleBody();
+            articleBody.setArticleId(article.getId());
+            articleBody.setContent(articleParam.getBody().getContent());
+            articleBody.setContentHtml(articleParam.getBody().getContentHtml());
+            articleBodyMapper.insert(articleBody);//插入之后就会产生一个id
+
+            //取到bodyID后进行更新
+            article.setBodyId(articleBody.getId());
+            articleMapper.updateById(article);
+        }
+
+        return Result.success(article.getId());
     }
 
 }

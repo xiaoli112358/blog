@@ -1,15 +1,18 @@
 package com.mszlu.blog.controller;
 
+import com.mszlu.blog.dao.pojo.Article;
 import com.mszlu.blog.service.ArticleService;
 import com.mszlu.blog.service.CommentService;
+import com.mszlu.blog.vo.ArticleVo;
 import com.mszlu.blog.vo.Result;
+import com.mszlu.blog.vo.param.ArticleParam;
 import com.mszlu.blog.vo.param.CommentParam;
 import com.mszlu.blog.vo.param.PageParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("articles")
+@RequestMapping("/articles")
 public class ArticleController {
     @Autowired
     private ArticleService articleService;
@@ -60,7 +63,15 @@ public class ArticleController {
         return articleService.findArticleById(articleId);
     }
 
-
+    /**
+     * 文章发布服务
+     * @param articleParam
+     * @return
+     */
+    @PostMapping("publish")
+    public Result publish(@RequestBody ArticleParam articleParam){
+        return articleService.publish(articleParam);
+    }
 
 
 }
