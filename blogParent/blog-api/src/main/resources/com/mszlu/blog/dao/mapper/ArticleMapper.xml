@@ -4,7 +4,7 @@
 
 <mapper namespace="com.mszlu.blog.dao.mapper.ArticleMapper">
     <select id="listArchives" resultType="com.mszlu.blog.dao.dos.Archives">
-        SELECT YEAR(create_date) AS YEAR,MONTH(create_date) AS MONTH,COUNT(*) AS count FROM ms_article
-        GROUP BY YEAR,MONTH
+        select FROM_UNIXTIME(create_date/1000,'%Y') as year, FROM_UNIXTIME(create_date/1000,'%m') as month,count(*) as count from ms_article group by year,month
+
     </select>
 </mapper>
