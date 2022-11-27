@@ -13,7 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class QiniuUtils {
-    public static  final String url = "https://static.mszlu.com/";
+    //点进nxl112358空间后，右边有一个测试域名(有效期30天)，要想使用http模式的必须报备
+    public static  final String url = "rm04hwo1l.hb-bkt.clouddn.com";
 
     //修改以下两个值放到proprietarties中，在密钥管理中获取
     @Value("${qiniu.accessKey}")
@@ -28,7 +29,7 @@ public class QiniuUtils {
         //...其他参数参考类注释
         UploadManager uploadManager = new UploadManager(cfg);
         //...生成上传凭证，然后准备上传，修改上传名称为自己创立空间的空间名称（是你自己的）
-        String bucket = "mszlu";
+        String bucket = "nxl112358";
         //默认不指定key的情况下，以文件内容的hash值作为文件名
         try {
             byte[] uploadBytes = file.getBytes();
