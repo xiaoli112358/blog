@@ -47,6 +47,22 @@ public class ArticleServiceImpl implements ArticleService {
 
         Page<Article> page = new Page<>(pageParams.getPage(), pageParams.getPageSize());
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        if (pageParams.getCategoryId()!=null){
+            queryWrapper.eq(Article::getCategoryId,pageParams.getCategoryId());
+        }
+
+        ArrayList<Long> list = new ArrayList<>();
+        if (pageParams.getTagId()!=null){
+            LambdaQueryWrapper<ArticleTag> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(ArticleTag::getTagId, pageParams.getTagId());
+            List<ArticleTag> articleTagList = articleTagMapper.selectList(wrapper);
+            for (ArticleTag articleTag : articleTagList) {
+                list.add(articleTag.getId());
+            }
+            if (articleTagList.size()>0){
+                queryWrapper.in(Article::getId,list);
+            }
+        }
         //是否置顶进行排序,        //时间倒序进行排列相当于order by create_data desc
         queryWrapper.orderByDesc(Article::getWeight, Article::getCreateDate);//对这两个字段进行倒叙查询
         Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);

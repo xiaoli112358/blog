@@ -44,6 +44,12 @@ public class CategoryServiceImpl implements CategoryService {
         return Result.success(copyList(categories));
     }
 
+    @Override
+    public Result categoryFindById(Long id) {
+        Category category = this.categoryMapper.selectById(id);
+        return Result.success(copy(category));
+    }
+
     private List<CategoryVo> copyList(List<Category> categories) {
         List<CategoryVo> categoryVoList=new ArrayList<>();
         for (Category category : categories) {
