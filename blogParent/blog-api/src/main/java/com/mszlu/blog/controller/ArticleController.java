@@ -1,6 +1,7 @@
 package com.mszlu.blog.controller;
 
 import com.mszlu.blog.aop.LogAnnotation;
+import com.mszlu.blog.cache.Cache;
 import com.mszlu.blog.dao.pojo.Article;
 import com.mszlu.blog.service.ArticleService;
 import com.mszlu.blog.service.CommentService;
@@ -21,6 +22,7 @@ public class ArticleController {
     @PostMapping
     //加上此注解，代表要对此接口记录日志
     @LogAnnotation(module = "文章",operation = "获取文章列表")
+    @Cache(expire = 5 * 60 * 1000,name = "article_list")
     public Result articles(@RequestBody PageParams pageParams) {
         //ArticleVo 页面接收的数据
 //        int a=10/0;
@@ -32,6 +34,7 @@ public class ArticleController {
      * 首页 最热文章
      * @return
      */
+    @Cache(expire = 5 * 60 * 1000,name = "hot_article")
     @PostMapping("/hot")
     public Result hotarticles() {
         //ArticleVo 页面接收的数据
@@ -42,6 +45,7 @@ public class ArticleController {
      * 首页 最新文章
      */
     @PostMapping("/new")
+    @Cache(expire = 5 * 60 * 1000,name = "new_article")
     public Result newArticles() {
         //ArticleVo 页面接收的数据
         int limit=5;
